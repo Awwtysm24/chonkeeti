@@ -5,26 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Little World</title>
 
+<!-- Elegant Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
+
 body {
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    overflow-x:hidden;
-    transition: background 1s;
-}
-
-/* Pastel + Dark toggle */
-body.pastel {
-    background: linear-gradient(135deg,#ffd6e8,#e0c3fc);
-    color:#333;
-}
-
-body.dark {
-    background: linear-gradient(135deg,#1e1e2f,#3a3a5f);
+    overflow:hidden;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #6d0f2b, #3a0014);
     color:white;
 }
 
-.center {
+/* Subtle background design */
+body::before {
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events:none;
+}
+
+/* Center screen */
+.screen {
     height:100vh;
     display:flex;
     flex-direction:column;
@@ -34,14 +40,33 @@ body.dark {
     padding:20px;
 }
 
+/* BIG title */
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px,6vw,70px);
+    letter-spacing:2px;
+}
+
+/* Button styling */
 button {
-    padding:12px 20px;
+    margin-top:30px;
+    padding:14px 30px;
+    font-size:16px;
     border:none;
-    border-radius:25px;
-    background:white;
+    border-radius:30px;
+    background:#ffffff;
+    color:#6d0f2b;
+    font-weight:600;
     cursor:pointer;
-    font-weight:bold;
-    margin-top:20px;
+    transition: all .3s ease;
+}
+
+button:hover {
+    transform: scale(1.08);
+}
+
+button:active {
+    transform: scale(0.92);
 }
 
 .hidden {
@@ -49,153 +74,141 @@ button {
 }
 
 /* Envelope */
-.envelope {
-    width:200px;
-    height:120px;
-    background:#fff;
+.envelope-wrapper {
     position:relative;
+    width:300px;
+    height:200px;
     cursor:pointer;
-    transition:transform .6s;
 }
 
-.envelope:before {
-    content:"";
+.envelope {
+    width:100%;
+    height:100%;
+    background:#f8d7da;
     position:absolute;
-    top:-60px;
-    border-left:100px solid transparent;
-    border-right:100px solid transparent;
-    border-bottom:60px solid #fff;
+    bottom:0;
+    border-radius:5px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
 }
 
-.envelope.open {
-    transform:scale(1.1);
+.flap {
+    position:absolute;
+    top:0;
+    width:0;
+    height:0;
+    border-left:150px solid transparent;
+    border-right:150px solid transparent;
+    border-bottom:100px solid #f5c2c7;
+    transform-origin:top;
+    transition:transform 1s ease;
 }
 
-/* Floating hearts */
-.heart {
-    position:fixed;
-    color:pink;
-    animation:float 6s linear infinite;
+/* Expand animation */
+.expand {
+    animation: expandEnvelope 1.2s forwards ease-in-out;
 }
 
-@keyframes float {
-    from { transform:translateY(100vh); opacity:1;}
-    to { transform:translateY(-10vh); opacity:0;}
+@keyframes expandEnvelope {
+    0% { transform:scale(1); }
+    100% { transform:scale(6); }
 }
 
-/* Timeline */
-.timeline {
-    padding:50px 20px;
-}
-
-.card {
-    margin:20px auto;
-    padding:20px;
-    max-width:400px;
-    background:rgba(255,255,255,0.2);
-    border-radius:20px;
-    backdrop-filter: blur(10px);
+/* Letter */
+.letter {
+    max-width:700px;
+    font-family: 'Playfair Display', serif;
+    font-size:clamp(20px,3vw,28px);
+    line-height:1.6;
+    animation:fadeIn 1.5s ease forwards;
     opacity:0;
-    transform:translateY(30px);
-    transition: all .6s ease;
 }
 
-.card.show {
-    opacity:1;
-    transform:translateY(0);
+@keyframes fadeIn {
+    to { opacity:1; }
 }
+
+/* Flowers animation */
+.flower {
+    position:fixed;
+    font-size:30px;
+    animation: floatUp 6s linear forwards;
+}
+
+@keyframes floatUp {
+    from { transform:translateY(100vh); opacity:1; }
+    to { transform:translateY(-10vh); opacity:0; }
+}
+
 </style>
 </head>
 
-<body class="pastel">
+<body>
 
-<!-- ENTRY -->
-<div class="center" id="entry">
+<!-- ENTRY SCREEN -->
+<div class="screen" id="entry">
     <h1>Welcome to Our Little World</h1>
-    <button onclick="enter()">Click to Enter 💌</button>
+    <button onclick="enterSite()">Click to Enter 💌</button>
 </div>
 
-<!-- ENVELOPE -->
-<div class="center hidden" id="envelopeScreen">
-    <div class="envelope" onclick="openLetter(this)"></div>
+<!-- ENVELOPE SCREEN -->
+<div class="screen hidden" id="envelopeScreen">
+    <div class="envelope-wrapper" onclick="openEnvelope()">
+        <div class="flap" id="flap"></div>
+        <div class="envelope"></div>
+    </div>
     <p>Tap the envelope</p>
 </div>
 
-<!-- LETTER -->
-<div class="center hidden" id="letterScreen">
-    <h2 id="typed"></h2>
-    <button onclick="toggleTheme()">Switch Theme 🌗</button>
-    <button onclick="showTimeline()">Our Timeline ✨</button>
-</div>
+<!-- LETTER SCREEN -->
+<div class="screen hidden" id="letterScreen">
+    <div class="letter" id="letterText">
+        This is where your beautiful letter will appear.
+        Tell me the exact words and I will format it perfectly.
+    </div>
 
-<!-- TIMELINE -->
-<div class="timeline hidden" id="timeline">
-    <div class="card">The day we met ❤️</div>
-    <div class="card">Our first inside joke 😂</div>
-    <div class="card">That unforgettable moment ✨</div>
+    <button onclick="showFlowers()">Send You Flowers 🌸</button>
 </div>
 
 <script>
-let clicks = 0;
 
-function enter() {
-    document.getElementById("entry").classList.add("hidden");
-    document.getElementById("envelopeScreen").classList.remove("hidden");
+function enterSite(){
+    const btn = event.target;
+    btn.style.transform="scale(0.8)";
+    setTimeout(()=>{
+        document.getElementById("entry").classList.add("hidden");
+        document.getElementById("envelopeScreen").classList.remove("hidden");
+    },300);
 }
 
-function openLetter(el) {
-    el.classList.add("open");
+function openEnvelope(){
+    const flap = document.getElementById("flap");
+    const wrapper = document.querySelector(".envelope-wrapper");
+
+    flap.style.transform="rotateX(180deg)";
+
+    setTimeout(()=>{
+        wrapper.classList.add("expand");
+    },800);
+
     setTimeout(()=>{
         document.getElementById("envelopeScreen").classList.add("hidden");
         document.getElementById("letterScreen").classList.remove("hidden");
-        typeText();
-        startHearts();
-    },800);
+        document.body.style.overflow="auto";
+    },2000);
 }
 
-let message = "You are my favorite person in this entire universe. Every day with you feels like magic.";
-let i = 0;
-
-function typeText() {
-    if(i < message.length) {
-        document.getElementById("typed").innerHTML += message.charAt(i);
-        i++;
-        setTimeout(typeText,40);
+function showFlowers(){
+    for(let i=0;i<20;i++){
+        let flower=document.createElement("div");
+        flower.className="flower";
+        flower.innerHTML="🌸";
+        flower.style.left=Math.random()*100+"vw";
+        flower.style.animationDuration=(Math.random()*3+4)+"s";
+        document.body.appendChild(flower);
+        setTimeout(()=>flower.remove(),6000);
     }
 }
 
-function toggleTheme() {
-    document.body.classList.toggle("dark");
-    document.body.classList.toggle("pastel");
-}
-
-function showTimeline() {
-    document.getElementById("timeline").classList.remove("hidden");
-    let cards = document.querySelectorAll(".card");
-    cards.forEach((card,index)=>{
-        setTimeout(()=>{card.classList.add("show")},index*300);
-    });
-}
-
-function startHearts() {
-    setInterval(()=>{
-        let heart = document.createElement("div");
-        heart.className="heart";
-        heart.innerHTML="❤";
-        heart.style.left=Math.random()*100+"vw";
-        heart.style.fontSize=(Math.random()*20+15)+"px";
-        document.body.appendChild(heart);
-        setTimeout(()=>{heart.remove()},6000);
-    },500);
-}
-
-/* Secret message */
-document.addEventListener("click",()=>{
-    clicks++;
-    if(clicks===5){
-        alert("You found the secret message 💖 I love you endlessly.");
-    }
-});
 </script>
 
 </body>
