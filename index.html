@@ -5,32 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Little World</title>
 
-<!-- Elegant Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
 
-body {
-    margin:0;
-    overflow:hidden;
-    font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at top, #6d0f2b, #3a0014);
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body{
+    font-family:'Montserrat',sans-serif;
+    background: radial-gradient(circle at top,#7a0f2b,#2a0010);
     color:white;
+    overflow:hidden;
 }
 
-/* Subtle background design */
-body::before {
+/* Subtle vignette */
+body::after{
     content:"";
     position:fixed;
-    width:100%;
-    height:100%;
-    background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-    background-size: 30px 30px;
+    inset:0;
+    background:radial-gradient(circle at center,transparent 40%,rgba(0,0,0,0.6));
     pointer-events:none;
 }
 
-/* Center screen */
-.screen {
+/* Layout */
+.screen{
     height:100vh;
     display:flex;
     flex-direction:column;
@@ -40,103 +38,110 @@ body::before {
     padding:20px;
 }
 
-/* BIG title */
-h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(40px,6vw,70px);
+h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(48px,7vw,80px);
     letter-spacing:2px;
+    margin-bottom:30px;
 }
 
-/* Button styling */
-button {
-    margin-top:30px;
-    padding:14px 30px;
-    font-size:16px;
+/* Button */
+button{
+    padding:16px 40px;
     border:none;
-    border-radius:30px;
-    background:#ffffff;
-    color:#6d0f2b;
+    border-radius:40px;
+    background:white;
+    color:#7a0f2b;
     font-weight:600;
     cursor:pointer;
-    transition: all .3s ease;
-}
-
-button:hover {
-    transform: scale(1.08);
-}
-
-button:active {
-    transform: scale(0.92);
-}
-
-.hidden {
-    display:none;
-}
-
-/* Envelope */
-.envelope-wrapper {
     position:relative;
-    width:300px;
-    height:200px;
-    cursor:pointer;
+    overflow:hidden;
+    transition:transform .2s ease;
 }
 
-.envelope {
-    width:100%;
-    height:100%;
-    background:#f8d7da;
+button:active{
+    transform:scale(0.9);
+}
+
+.hidden{ display:none; }
+
+/* Envelope container */
+.envelope-container{
+    perspective:1000px;
+}
+
+/* Envelope body */
+.envelope{
+    width:320px;
+    height:220px;
+    position:relative;
+    cursor:pointer;
+    transition:transform 1.5s ease-in-out;
+}
+
+/* Bottom part */
+.envelope-body{
     position:absolute;
     bottom:0;
-    border-radius:5px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    width:100%;
+    height:160px;
+    background:#f5d5dc;
+    border-radius:6px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.5);
 }
 
-.flap {
+/* Flap */
+.envelope-flap{
     position:absolute;
     top:0;
-    width:0;
-    height:0;
-    border-left:150px solid transparent;
-    border-right:150px solid transparent;
-    border-bottom:100px solid #f5c2c7;
+    width:100%;
+    height:120px;
+    background:#f2c4ce;
+    clip-path:polygon(0 100%,50% 0,100% 100%);
     transform-origin:top;
     transition:transform 1s ease;
 }
 
-/* Expand animation */
-.expand {
-    animation: expandEnvelope 1.2s forwards ease-in-out;
+/* Open animation */
+.open .envelope-flap{
+    transform:rotateX(180deg);
 }
 
-@keyframes expandEnvelope {
-    0% { transform:scale(1); }
-    100% { transform:scale(6); }
+/* Expand animation */
+.expand{
+    animation:coverScreen 1.8s forwards ease-in-out;
+}
+
+@keyframes coverScreen{
+    to{
+        transform:scale(6);
+    }
 }
 
 /* Letter */
-.letter {
-    max-width:700px;
-    font-family: 'Playfair Display', serif;
-    font-size:clamp(20px,3vw,28px);
-    line-height:1.6;
-    animation:fadeIn 1.5s ease forwards;
+.letter{
+    max-width:750px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(22px,3vw,32px);
+    line-height:1.7;
     opacity:0;
+    animation:fadeIn 2s forwards;
 }
 
-@keyframes fadeIn {
-    to { opacity:1; }
+@keyframes fadeIn{
+    to{ opacity:1; }
 }
 
-/* Flowers animation */
-.flower {
+/* Flowers */
+.flower{
     position:fixed;
-    font-size:30px;
-    animation: floatUp 6s linear forwards;
+    font-size:28px;
+    animation:floatUp linear forwards;
 }
 
-@keyframes floatUp {
-    from { transform:translateY(100vh); opacity:1; }
-    to { transform:translateY(-10vh); opacity:0; }
+@keyframes floatUp{
+    from{ transform:translateY(100vh); opacity:1;}
+    to{ transform:translateY(-10vh); opacity:0;}
 }
 
 </style>
@@ -144,68 +149,66 @@ button:active {
 
 <body>
 
-<!-- ENTRY SCREEN -->
+<!-- ENTRY -->
 <div class="screen" id="entry">
     <h1>Welcome to Our Little World</h1>
-    <button onclick="enterSite()">Click to Enter 💌</button>
+    <button onclick="goToEnvelope()">Enter 💌</button>
 </div>
 
-<!-- ENVELOPE SCREEN -->
+<!-- ENVELOPE -->
 <div class="screen hidden" id="envelopeScreen">
-    <div class="envelope-wrapper" onclick="openEnvelope()">
-        <div class="flap" id="flap"></div>
-        <div class="envelope"></div>
+    <div class="envelope-container">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+        </div>
     </div>
-    <p>Tap the envelope</p>
+    <p style="margin-top:20px;">Tap the envelope</p>
 </div>
 
-<!-- LETTER SCREEN -->
+<!-- LETTER -->
 <div class="screen hidden" id="letterScreen">
-    <div class="letter" id="letterText">
-        This is where your beautiful letter will appear.
-        Tell me the exact words and I will format it perfectly.
+    <div class="letter">
+        This is where your letter will appear beautifully formatted.
+        Send me the exact words and I’ll style them perfectly.
     </div>
 
-    <button onclick="showFlowers()">Send You Flowers 🌸</button>
+    <button style="margin-top:40px;" onclick="releaseFlowers()">
+        Send You Flowers 🌸
+    </button>
 </div>
 
 <script>
 
-function enterSite(){
-    const btn = event.target;
-    btn.style.transform="scale(0.8)";
-    setTimeout(()=>{
-        document.getElementById("entry").classList.add("hidden");
-        document.getElementById("envelopeScreen").classList.remove("hidden");
-    },300);
+function goToEnvelope(){
+    document.getElementById("entry").classList.add("hidden");
+    document.getElementById("envelopeScreen").classList.remove("hidden");
 }
 
 function openEnvelope(){
-    const flap = document.getElementById("flap");
-    const wrapper = document.querySelector(".envelope-wrapper");
-
-    flap.style.transform="rotateX(180deg)";
+    const env=document.getElementById("envelope");
+    env.classList.add("open");
 
     setTimeout(()=>{
-        wrapper.classList.add("expand");
-    },800);
+        env.classList.add("expand");
+    },1000);
 
     setTimeout(()=>{
         document.getElementById("envelopeScreen").classList.add("hidden");
         document.getElementById("letterScreen").classList.remove("hidden");
         document.body.style.overflow="auto";
-    },2000);
+    },2500);
 }
 
-function showFlowers(){
-    for(let i=0;i<20;i++){
+function releaseFlowers(){
+    for(let i=0;i<30;i++){
         let flower=document.createElement("div");
         flower.className="flower";
-        flower.innerHTML="🌸";
+        flower.innerHTML=["🌸","🌹","💐"][Math.floor(Math.random()*3)];
         flower.style.left=Math.random()*100+"vw";
         flower.style.animationDuration=(Math.random()*3+4)+"s";
         document.body.appendChild(flower);
-        setTimeout(()=>flower.remove(),6000);
+        setTimeout(()=>flower.remove(),7000);
     }
 }
 
