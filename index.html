@@ -5,29 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Little World</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
-
-* { margin:0; padding:0; box-sizing:border-box; }
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
     font-family:'Montserrat',sans-serif;
-    background: radial-gradient(circle at top,#7a0f2b,#2a0010);
+    background:linear-gradient(135deg,#7b0f2b,#2a0010);
     color:white;
     overflow:hidden;
 }
 
-/* Subtle vignette */
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:radial-gradient(circle at center,transparent 40%,rgba(0,0,0,0.6));
-    pointer-events:none;
-}
-
-/* Layout */
+/* Center layout */
 .screen{
     height:100vh;
     display:flex;
@@ -39,111 +29,95 @@ body::after{
 }
 
 h1{
-    font-family:'Cormorant Garamond',serif;
-    font-size:clamp(48px,7vw,80px);
-    letter-spacing:2px;
+    font-family:'Playfair Display',serif;
+    font-size:clamp(50px,7vw,85px);
     margin-bottom:30px;
 }
 
 /* Button */
 button{
-    padding:16px 40px;
+    padding:16px 45px;
     border:none;
-    border-radius:40px;
+    border-radius:50px;
     background:white;
-    color:#7a0f2b;
+    color:#7b0f2b;
     font-weight:600;
     cursor:pointer;
-    position:relative;
-    overflow:hidden;
-    transition:transform .2s ease;
+    transition:all .25s ease;
 }
 
-button:active{
-    transform:scale(0.9);
-}
+button:hover{transform:scale(1.07);}
+button:active{transform:scale(0.9);}
 
-.hidden{ display:none; }
+.hidden{display:none;}
 
-/* Envelope container */
-.envelope-container{
-    perspective:1000px;
-}
-
-/* Envelope body */
+/* Envelope */
 .envelope{
-    width:320px;
+    width:340px;
     height:220px;
     position:relative;
     cursor:pointer;
-    transition:transform 1.5s ease-in-out;
+    transition:all 1.5s ease;
 }
 
-/* Bottom part */
+/* Body */
 .envelope-body{
-    position:absolute;
-    bottom:0;
     width:100%;
     height:160px;
-    background:#f5d5dc;
-    border-radius:6px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.5);
+    background:#f6d4dc;
+    position:absolute;
+    bottom:0;
+    border-radius:8px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
 }
 
 /* Flap */
 .envelope-flap{
-    position:absolute;
-    top:0;
     width:100%;
     height:120px;
-    background:#f2c4ce;
+    background:#f2c2cd;
+    position:absolute;
+    top:0;
     clip-path:polygon(0 100%,50% 0,100% 100%);
-    transform-origin:top;
-    transition:transform 1s ease;
+    transition:all 1s ease;
 }
 
 /* Open animation */
 .open .envelope-flap{
-    transform:rotateX(180deg);
+    transform:translateY(-60px);
+    opacity:0;
 }
 
 /* Expand animation */
 .expand{
-    animation:coverScreen 1.8s forwards ease-in-out;
-}
-
-@keyframes coverScreen{
-    to{
-        transform:scale(6);
-    }
+    transform:scale(6);
 }
 
 /* Letter */
 .letter{
     max-width:750px;
-    font-family:'Cormorant Garamond',serif;
+    font-family:'Playfair Display',serif;
     font-size:clamp(22px,3vw,32px);
     line-height:1.7;
+    animation:fadeIn 1.5s forwards;
     opacity:0;
-    animation:fadeIn 2s forwards;
 }
 
 @keyframes fadeIn{
-    to{ opacity:1; }
+    to{opacity:1;}
 }
 
 /* Flowers */
 .flower{
     position:fixed;
-    font-size:28px;
+    font-size:30px;
     animation:floatUp linear forwards;
 }
 
 @keyframes floatUp{
-    from{ transform:translateY(100vh); opacity:1;}
-    to{ transform:translateY(-10vh); opacity:0;}
+    from{transform:translateY(100vh);opacity:1;}
+    to{transform:translateY(-10vh);opacity:0;}
 }
-
 </style>
 </head>
 
@@ -152,16 +126,14 @@ button:active{
 <!-- ENTRY -->
 <div class="screen" id="entry">
     <h1>Welcome to Our Little World</h1>
-    <button onclick="goToEnvelope()">Enter 💌</button>
+    <button onclick="start()">Enter 💌</button>
 </div>
 
 <!-- ENVELOPE -->
 <div class="screen hidden" id="envelopeScreen">
-    <div class="envelope-container">
-        <div class="envelope" id="envelope" onclick="openEnvelope()">
-            <div class="envelope-flap"></div>
-            <div class="envelope-body"></div>
-        </div>
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+        <div class="envelope-flap"></div>
+        <div class="envelope-body"></div>
     </div>
     <p style="margin-top:20px;">Tap the envelope</p>
 </div>
@@ -169,18 +141,17 @@ button:active{
 <!-- LETTER -->
 <div class="screen hidden" id="letterScreen">
     <div class="letter">
-        This is where your letter will appear beautifully formatted.
-        Send me the exact words and I’ll style them perfectly.
+        This is where your real letter will go.
+        Send me your exact words and I’ll format them beautifully.
     </div>
-
-    <button style="margin-top:40px;" onclick="releaseFlowers()">
+    <button style="margin-top:40px;" onclick="flowers()">
         Send You Flowers 🌸
     </button>
 </div>
 
 <script>
 
-function goToEnvelope(){
+function start(){
     document.getElementById("entry").classList.add("hidden");
     document.getElementById("envelopeScreen").classList.remove("hidden");
 }
@@ -191,16 +162,16 @@ function openEnvelope(){
 
     setTimeout(()=>{
         env.classList.add("expand");
-    },1000);
+    },800);
 
     setTimeout(()=>{
         document.getElementById("envelopeScreen").classList.add("hidden");
         document.getElementById("letterScreen").classList.remove("hidden");
         document.body.style.overflow="auto";
-    },2500);
+    },2000);
 }
 
-function releaseFlowers(){
+function flowers(){
     for(let i=0;i<30;i++){
         let flower=document.createElement("div");
         flower.className="flower";
