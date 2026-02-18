@@ -3,264 +3,267 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Little World</title>
+<title>For You ❤️</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
-}
-
 body {
+  margin: 0;
   height: 100vh;
+  background: linear-gradient(135deg, #8b0000, #b11226);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
   overflow: hidden;
-  background: linear-gradient(135deg, #8b0a24, #a10f2f);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* ---------- SCREENS ---------- */
-
-.screen {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.6s ease;
-}
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* ---------- ENVELOPE ---------- */
-
-.envelope {
+/* Envelope Container */
+.scene {
   position: relative;
   width: 320px;
-  height: 220px;
+  height: 240px;
+  perspective: 1000px;
   cursor: pointer;
 }
 
-.envelope-body {
+/* Envelope Base */
+.envelope {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: #e6c5cc;
-  border-radius: 8px;
+  background: #e6c9c9;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* Diagonal seams */
-.envelope-body::before,
-.envelope-body::after {
+/* Bottom Flap */
+.envelope::before {
   content: "";
   position: absolute;
-  width: 100%;
-  height: 100%;
-  border-top: 2px solid #d3aab2;
-  transform: skewY(25deg);
-  top: -60%;
+  width: 0;
+  height: 0;
+  border-left: 160px solid transparent;
+  border-right: 160px solid transparent;
+  border-top: 120px solid #d9b5b5;
+  top: 0;
+  left: 0;
 }
 
-.envelope-body::after {
-  transform: skewY(-25deg);
-}
-
-.envelope-flap {
+/* Top Flap */
+.flap {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  background: #d9aeb6;
-  clip-path: polygon(0 0, 50% 60%, 100% 0);
+  width: 0;
+  height: 0;
+  border-left: 160px solid transparent;
+  border-right: 160px solid transparent;
+  border-bottom: 120px solid #f1dada;
+  top: 0;
+  left: 0;
   transform-origin: top;
-  transition: transform 0.8s ease;
-  z-index: 2;
-}
-
-.open .envelope-flap {
-  transform: rotateX(180deg);
-}
-
-/* Heart seal */
-.seal {
-  position: absolute;
-  top: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 28px;
-  z-index: 3;
-}
-
-.tap-text {
-  margin-top: 30px;
-  color: white;
-  font-size: 18px;
-}
-
-/* ---------- LETTER ---------- */
-
-.letter-container {
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.letter-container img {
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-}
-
-/* ---------- BUTTON ---------- */
-
-button {
-  margin-top: 40px;
-  padding: 15px 40px;
-  border-radius: 40px;
-  border: none;
-  font-size: 18px;
-  background: white;
-  color: #8b0a24;
-  cursor: pointer;
-  position: relative;
+  transition: transform 1s ease;
   z-index: 5;
 }
 
-/* ---------- SVG VINE ---------- */
-
-#vineSVG {
+/* Flap lines */
+.flap::after {
+  content: "";
   position: absolute;
-  bottom: -80px;
-  left: 0;
-  width: 100%;
-  height: 120%;
-  pointer-events: none;
+  width: 300px;
+  height: 2px;
+  background: rgba(0,0,0,0.15);
+  top: 118px;
+  left: -150px;
 }
 
-.vine-path {
-  fill: none;
-  stroke: #1f7a1f;
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-dasharray: 1600;
-  stroke-dashoffset: 1600;
-  animation: drawVine 3s ease forwards;
+/* Letter */
+.letter {
+  position: absolute;
+  width: 280px;
+  height: 180px;
+  background: #fdf6e3;
+  top: 30px;
+  left: 20px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+  transform: translateY(100px);
+  transition: transform 1s ease 0.8s;
+  z-index: 2;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  overflow: hidden;
 }
 
-@keyframes drawVine {
-  to {
-    stroke-dashoffset: 0;
-  }
+.letter h2 {
+  margin: 0;
+  color: #b11226;
 }
+
+.letter p {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Button */
+.flower-btn {
+  margin-top: 15px;
+  padding: 10px 25px;
+  border-radius: 30px;
+  border: none;
+  background: white;
+  color: #b11226;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 1s ease 1.5s;
+}
+
+/* Vines */
+.vine {
+  position: absolute;
+  width: 6px;
+  background: #1f7a1f;
+  border-radius: 10px;
+  transform-origin: bottom;
+  transform: scaleY(0);
+}
+
+.vine1 { left: 80px; bottom: 20px; height: 300px; }
+.vine2 { left: 150px; bottom: 20px; height: 280px; }
+.vine3 { left: 220px; bottom: 20px; height: 320px; }
 
 /* Flowers */
 .flower {
-  opacity: 0;
-  transform-origin: center;
-  animation: bloom 0.8s ease forwards;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform: scale(0);
 }
 
-@keyframes bloom {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.petal {
+  width: 15px;
+  height: 15px;
+  background: pink;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.center {
+  width: 10px;
+  height: 10px;
+  background: yellow;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+/* Petal positions */
+.p1 { top: 0; left: 7px; }
+.p2 { top: 7px; left: 15px; }
+.p3 { top: 15px; left: 7px; }
+.p4 { top: 7px; left: 0; }
+
+/* Animation classes */
+.open .flap {
+  transform: rotateX(180deg);
+}
+
+.open .letter {
+  transform: translateY(-20px);
+}
+
+.open .flower-btn {
+  opacity: 1;
+}
+
+.grow {
+  animation: growVine 2s forwards;
+}
+
+@keyframes growVine {
+  to { transform: scaleY(1); }
+}
+
+.bloom {
+  animation: bloomFlower 0.8s forwards;
+}
+
+@keyframes bloomFlower {
+  to { transform: scale(1); }
+}
+
+.tap-text {
+  position: absolute;
+  bottom: -40px;
+  width: 100%;
+  text-align: center;
+  color: white;
 }
 </style>
 </head>
 
 <body>
 
-<!-- SCREEN 1 -->
-<div class="screen" id="screen1">
-  <div class="envelope" id="envelope">
-    <div class="envelope-flap"></div>
-    <div class="envelope-body"></div>
-    <div class="seal">❤️</div>
+<div class="scene" onclick="openEnvelope()">
+  <div class="envelope"></div>
+  <div class="flap"></div>
+
+  <div class="letter">
+    <h2>For You ❤️</h2>
+    <p>You make my world brighter every day.</p>
+    <button class="flower-btn" onclick="growFlowers(event)">Send Flowers 🌸</button>
   </div>
+
   <div class="tap-text">Tap the envelope</div>
 </div>
 
-<!-- SCREEN 2 -->
-<div class="screen hidden" id="screen2">
-
-  <div class="letter-container" id="letterArea">
-    <img src="letter.png" alt="Letter">
-    <svg id="vineSVG" viewBox="0 0 500 700"></svg>
-  </div>
-
-  <button onclick="growVine()">Send Flowers 🌸</button>
-
-</div>
-
 <script>
-const envelope = document.getElementById("envelope");
-const screen1 = document.getElementById("screen1");
-const screen2 = document.getElementById("screen2");
-
-envelope.addEventListener("click", () => {
-  envelope.classList.add("open");
-  setTimeout(() => {
-    screen1.classList.add("hidden");
-    screen2.classList.remove("hidden");
-  }, 800);
-});
-
-function growVine() {
-  const svg = document.getElementById("vineSVG");
-  svg.innerHTML = "";
-
-  // Curved vine like your drawing
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("d",
-    "M250 650 C 180 560, 330 500, 200 400 S 320 300, 230 200 S 340 120, 260 40"
-  );
-  path.setAttribute("class", "vine-path");
-  svg.appendChild(path);
-
-  // Flower types
-  setTimeout(() => addFlower(svg, 220, 480, "pink"), 1000);
-  setTimeout(() => addFlower(svg, 300, 350, "orange"), 1500);
-  setTimeout(() => addFlower(svg, 210, 250, "purple"), 2000);
-  setTimeout(() => addFlower(svg, 310, 120, "pink"), 2400);
+function openEnvelope() {
+  document.querySelector('.scene').classList.add('open');
 }
 
-function addFlower(svg, x, y, color) {
+function growFlowers(e) {
+  e.stopPropagation();
 
-  const flowerGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  flowerGroup.setAttribute("class", "flower");
+  const vines = ['vine1','vine2','vine3'];
 
-  const colors = {
-    pink: "#ff6fa5",
-    orange: "#ffb347",
-    purple: "#b57edc"
-  };
+  vines.forEach((v, i) => {
+    const vine = document.createElement('div');
+    vine.classList.add('vine', v);
+    document.querySelector('.letter').appendChild(vine);
 
-  for (let i = 0; i < 5; i++) {
-    const petal = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    petal.setAttribute("cx", x + Math.cos(i * 72 * Math.PI/180) * 12);
-    petal.setAttribute("cy", y + Math.sin(i * 72 * Math.PI/180) * 12);
-    petal.setAttribute("r", 10);
-    petal.setAttribute("fill", colors[color]);
-    flowerGroup.appendChild(petal);
-  }
+    setTimeout(() => {
+      vine.classList.add('grow');
+    }, i * 300);
 
-  const center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  center.setAttribute("cx", x);
-  center.setAttribute("cy", y);
-  center.setAttribute("r", 8);
-  center.setAttribute("fill", "#ffd700");
-  flowerGroup.appendChild(center);
+    setTimeout(() => {
+      createFlower(vine, 50);
+      createFlower(vine, 120);
+      createFlower(vine, 200);
+    }, 2000 + i * 300);
+  });
+}
 
-  svg.appendChild(flowerGroup);
+function createFlower(vine, topPos) {
+  const flower = document.createElement('div');
+  flower.classList.add('flower');
+  flower.style.top = topPos + "px";
+  flower.style.left = "-12px";
+
+  flower.innerHTML = `
+    <div class="petal p1"></div>
+    <div class="petal p2"></div>
+    <div class="petal p3"></div>
+    <div class="petal p4"></div>
+    <div class="center"></div>
+  `;
+
+  vine.appendChild(flower);
+
+  setTimeout(() => {
+    flower.classList.add('bloom');
+  }, 100);
 }
 </script>
 
