@@ -22,16 +22,16 @@ body {
   align-items: center;
 }
 
-/* ---------- SCREEN ---------- */
+/* ---------- SCREENS ---------- */
 
 .screen {
   position: absolute;
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   transition: opacity 0.6s ease;
 }
 
@@ -57,16 +57,20 @@ body {
   border-radius: 8px;
 }
 
-/* Diagonal seam lines */
+/* Diagonal seams */
 .envelope-body::before,
 .envelope-body::after {
   content: "";
   position: absolute;
   width: 100%;
   height: 100%;
-  border-left: 2px solid #d3aab2;
-  border-right: 2px solid #d3aab2;
-  clip-path: polygon(0 0, 50% 55%, 100% 0);
+  border-top: 2px solid #d3aab2;
+  transform: skewY(25deg);
+  top: -60%;
+}
+
+.envelope-body::after {
+  transform: skewY(-25deg);
 }
 
 .envelope-flap {
@@ -84,6 +88,16 @@ body {
   transform: rotateX(180deg);
 }
 
+/* Heart seal */
+.seal {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  z-index: 3;
+}
+
 .tap-text {
   margin-top: 30px;
   color: white;
@@ -95,10 +109,10 @@ body {
 .letter-container {
   width: 90%;
   max-width: 500px;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 }
 
 .letter-container img {
@@ -119,39 +133,47 @@ button {
   color: #8b0a24;
   cursor: pointer;
   position: relative;
-  overflow: visible;
   z-index: 5;
 }
 
-/* ---------- VINE ANIMATION ---------- */
+/* ---------- SVG VINE ---------- */
 
-.vine {
+#vineSVG {
   position: absolute;
-  bottom: 50px;
-  width: 6px;
-  height: 0;
-  background: green;
-  border-radius: 3px;
-  animation: grow 2s ease forwards;
+  bottom: -80px;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  pointer-events: none;
 }
 
-@keyframes grow {
-  0% { height: 0; }
-  100% { height: 350px; }
+.vine-path {
+  fill: none;
+  stroke: #1f7a1f;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+  animation: drawVine 3s ease forwards;
 }
 
+@keyframes drawVine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Flowers */
 .flower {
-  position: absolute;
-  font-size: 28px;
   opacity: 0;
-  animation: bloom 1s ease forwards;
+  transform-origin: center;
+  animation: bloom 0.8s ease forwards;
 }
 
 @keyframes bloom {
-  0% { transform: scale(0); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
-
 </style>
 </head>
 
@@ -159,12 +181,11 @@ button {
 
 <!-- SCREEN 1 -->
 <div class="screen" id="screen1">
-
   <div class="envelope" id="envelope">
     <div class="envelope-flap"></div>
     <div class="envelope-body"></div>
+    <div class="seal">❤️</div>
   </div>
-
   <div class="tap-text">Tap the envelope</div>
 </div>
 
@@ -173,6 +194,7 @@ button {
 
   <div class="letter-container" id="letterArea">
     <img src="letter.png" alt="Letter">
+    <svg id="vineSVG" viewBox="0 0 500 700"></svg>
   </div>
 
   <button onclick="growVine()">Send Flowers 🌸</button>
@@ -186,37 +208,59 @@ const screen2 = document.getElementById("screen2");
 
 envelope.addEventListener("click", () => {
   envelope.classList.add("open");
-
   setTimeout(() => {
     screen1.classList.add("hidden");
     screen2.classList.remove("hidden");
   }, 800);
 });
 
-
 function growVine() {
-  const letterArea = document.getElementById("letterArea");
+  const svg = document.getElementById("vineSVG");
+  svg.innerHTML = "";
 
-  const vine = document.createElement("div");
-  vine.classList.add("vine");
+  // Curved vine like your drawing
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d",
+    "M250 650 C 180 560, 330 500, 200 400 S 320 300, 230 200 S 340 120, 260 40"
+  );
+  path.setAttribute("class", "vine-path");
+  svg.appendChild(path);
 
-  letterArea.appendChild(vine);
-
-  // Add flowers at different heights
-  setTimeout(() => addFlower(vine, 80), 600);
-  setTimeout(() => addFlower(vine, 160), 1000);
-  setTimeout(() => addFlower(vine, 240), 1400);
-  setTimeout(() => addFlower(vine, 320), 1800);
+  // Flower types
+  setTimeout(() => addFlower(svg, 220, 480, "pink"), 1000);
+  setTimeout(() => addFlower(svg, 300, 350, "orange"), 1500);
+  setTimeout(() => addFlower(svg, 210, 250, "purple"), 2000);
+  setTimeout(() => addFlower(svg, 310, 120, "pink"), 2400);
 }
 
-function addFlower(vine, height) {
-  const flower = document.createElement("div");
-  flower.classList.add("flower");
-  flower.innerHTML = "🌸";
-  flower.style.bottom = height + "px";
-  flower.style.left = "-10px";
+function addFlower(svg, x, y, color) {
 
-  vine.appendChild(flower);
+  const flowerGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  flowerGroup.setAttribute("class", "flower");
+
+  const colors = {
+    pink: "#ff6fa5",
+    orange: "#ffb347",
+    purple: "#b57edc"
+  };
+
+  for (let i = 0; i < 5; i++) {
+    const petal = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    petal.setAttribute("cx", x + Math.cos(i * 72 * Math.PI/180) * 12);
+    petal.setAttribute("cy", y + Math.sin(i * 72 * Math.PI/180) * 12);
+    petal.setAttribute("r", 10);
+    petal.setAttribute("fill", colors[color]);
+    flowerGroup.appendChild(petal);
+  }
+
+  const center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  center.setAttribute("cx", x);
+  center.setAttribute("cy", y);
+  center.setAttribute("r", 8);
+  center.setAttribute("fill", "#ffd700");
+  flowerGroup.appendChild(center);
+
+  svg.appendChild(flowerGroup);
 }
 </script>
 
