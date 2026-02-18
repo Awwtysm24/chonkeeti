@@ -22,7 +22,7 @@ body {
   align-items: center;
 }
 
-/* ---------- SCREEN WRAPPER ---------- */
+/* ---------- SCREEN ---------- */
 
 .screen {
   position: absolute;
@@ -40,34 +40,33 @@ body {
   pointer-events: none;
 }
 
-/* ---------- INITIAL BACKGROUND DESIGN ---------- */
-
-.background-pattern {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 0%, transparent 40%),
-              radial-gradient(circle at 80% 70%, rgba(255,255,255,0.05) 0%, transparent 40%);
-  z-index: 0;
-}
-
 /* ---------- ENVELOPE ---------- */
 
 .envelope {
   position: relative;
-  width: 300px;
-  height: 200px;
+  width: 320px;
+  height: 220px;
   cursor: pointer;
-  z-index: 1;
 }
 
 .envelope-body {
+  position: absolute;
   width: 100%;
   height: 100%;
   background: #e6c5cc;
   border-radius: 8px;
+}
+
+/* Diagonal seam lines */
+.envelope-body::before,
+.envelope-body::after {
+  content: "";
   position: absolute;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
+  border-left: 2px solid #d3aab2;
+  border-right: 2px solid #d3aab2;
+  clip-path: polygon(0 0, 50% 55%, 100% 0);
 }
 
 .envelope-flap {
@@ -75,9 +74,10 @@ body {
   width: 100%;
   height: 100%;
   background: #d9aeb6;
-  clip-path: polygon(0 0, 50% 55%, 100% 0);
+  clip-path: polygon(0 0, 50% 60%, 100% 0);
   transform-origin: top;
   transition: transform 0.8s ease;
+  z-index: 2;
 }
 
 .open .envelope-flap {
@@ -88,10 +88,9 @@ body {
   margin-top: 30px;
   color: white;
   font-size: 18px;
-  letter-spacing: 1px;
 }
 
-/* ---------- LETTER SCREEN ---------- */
+/* ---------- LETTER ---------- */
 
 .letter-container {
   width: 90%;
@@ -99,6 +98,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .letter-container img {
@@ -119,26 +119,37 @@ button {
   color: #8b0a24;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 5;
 }
 
-/* ---------- FLOWER ANIMATION ---------- */
+/* ---------- VINE ANIMATION ---------- */
+
+.vine {
+  position: absolute;
+  bottom: 50px;
+  width: 6px;
+  height: 0;
+  background: green;
+  border-radius: 3px;
+  animation: grow 2s ease forwards;
+}
+
+@keyframes grow {
+  0% { height: 0; }
+  100% { height: 350px; }
+}
 
 .flower {
   position: absolute;
-  font-size: 20px;
-  animation: rise 2s ease forwards;
+  font-size: 28px;
+  opacity: 0;
+  animation: bloom 1s ease forwards;
 }
 
-@keyframes rise {
-  0% {
-    transform: translateY(0) scale(0.5);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-150px) scale(1.2);
-    opacity: 0;
-  }
+@keyframes bloom {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 </style>
@@ -148,7 +159,6 @@ button {
 
 <!-- SCREEN 1 -->
 <div class="screen" id="screen1">
-  <div class="background-pattern"></div>
 
   <div class="envelope" id="envelope">
     <div class="envelope-flap"></div>
@@ -158,19 +168,16 @@ button {
   <div class="tap-text">Tap the envelope</div>
 </div>
 
-
 <!-- SCREEN 2 -->
 <div class="screen hidden" id="screen2">
 
-  <div class="letter-container">
-    <!-- Replace letter.png with your image file name -->
+  <div class="letter-container" id="letterArea">
     <img src="letter.png" alt="Letter">
   </div>
 
-  <button onclick="sendFlowers(this)">Send Flowers 🌸</button>
+  <button onclick="growVine()">Send Flowers 🌸</button>
 
 </div>
-
 
 <script>
 const envelope = document.getElementById("envelope");
@@ -187,23 +194,29 @@ envelope.addEventListener("click", () => {
 });
 
 
-function sendFlowers(button) {
-  for (let i = 0; i < 15; i++) {
-    const flower = document.createElement("div");
-    flower.classList.add("flower");
-    flower.innerHTML = "🌸";
+function growVine() {
+  const letterArea = document.getElementById("letterArea");
 
-    const x = Math.random() * button.offsetWidth;
+  const vine = document.createElement("div");
+  vine.classList.add("vine");
 
-    flower.style.left = x + "px";
-    flower.style.bottom = "0px";
+  letterArea.appendChild(vine);
 
-    button.appendChild(flower);
+  // Add flowers at different heights
+  setTimeout(() => addFlower(vine, 80), 600);
+  setTimeout(() => addFlower(vine, 160), 1000);
+  setTimeout(() => addFlower(vine, 240), 1400);
+  setTimeout(() => addFlower(vine, 320), 1800);
+}
 
-    setTimeout(() => {
-      flower.remove();
-    }, 2000);
-  }
+function addFlower(vine, height) {
+  const flower = document.createElement("div");
+  flower.classList.add("flower");
+  flower.innerHTML = "🌸";
+  flower.style.bottom = height + "px";
+  flower.style.left = "-10px";
+
+  vine.appendChild(flower);
 }
 </script>
 
