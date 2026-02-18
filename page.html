@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Little World</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Montserrat',sans-serif;
+    background:linear-gradient(135deg,#7b0f2b,#2a0010);
+    color:white;
+    overflow:hidden;
+}
+
+/* Center layout */
+.screen{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(50px,7vw,85px);
+    margin-bottom:30px;
+}
+
+/* Button */
+button{
+    padding:16px 45px;
+    border:none;
+    border-radius:50px;
+    background:white;
+    color:#7b0f2b;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .25s ease;
+}
+
+button:hover{transform:scale(1.07);}
+button:active{transform:scale(0.9);}
+
+.hidden{display:none;}
+
+/* Envelope */
+.envelope{
+    width:340px;
+    height:220px;
+    position:relative;
+    cursor:pointer;
+    transition:all 1.5s ease;
+}
+
+/* Body */
+.envelope-body{
+    width:100%;
+    height:160px;
+    background:#f6d4dc;
+    position:absolute;
+    bottom:0;
+    border-radius:8px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Flap */
+.envelope-flap{
+    width:100%;
+    height:120px;
+    background:#f2c2cd;
+    position:absolute;
+    top:0;
+    clip-path:polygon(0 100%,50% 0,100% 100%);
+    transition:all 1s ease;
+}
+
+/* Open animation */
+.open .envelope-flap{
+    transform:translateY(-60px);
+    opacity:0;
+}
+
+/* Expand animation */
+.expand{
+    transform:scale(6);
+}
+
+/* Letter */
+.letter{
+    max-width:750px;
+    font-family:'Playfair Display',serif;
+    font-size:clamp(22px,3vw,32px);
+    line-height:1.7;
+    animation:fadeIn 1.5s forwards;
+    opacity:0;
+}
+
+@keyframes fadeIn{
+    to{opacity:1;}
+}
+
+/* Flowers */
+.flower{
+    position:fixed;
+    font-size:30px;
+    animation:floatUp linear forwards;
+}
+
+@keyframes floatUp{
+    from{transform:translateY(100vh);opacity:1;}
+    to{transform:translateY(-10vh);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ENTRY -->
+<div class="screen" id="entry">
+    <h1>Welcome to Our Little World</h1>
+    <button onclick="start()">Enter 💌</button>
+</div>
+
+<!-- ENVELOPE -->
+<div class="screen hidden" id="envelopeScreen">
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+        <div class="envelope-flap"></div>
+        <div class="envelope-body"></div>
+    </div>
+    <p style="margin-top:20px;">Tap the envelope</p>
+</div>
+
+<!-- LETTER -->
+<div class="screen hidden" id="letterScreen">
+    <div class="letter">
+        This is where your real letter will go.
+        Send me your exact words and I’ll format them beautifully.
+    </div>
+    <button style="margin-top:40px;" onclick="flowers()">
+        Send You Flowers 🌸
+    </button>
+</div>
+
+<script>
+
+function start(){
+    document.getElementById("entry").classList.add("hidden");
+    document.getElementById("envelopeScreen").classList.remove("hidden");
+}
+
+function openEnvelope(){
+    const env=document.getElementById("envelope");
+    env.classList.add("open");
+
+    setTimeout(()=>{
+        env.classList.add("expand");
+    },800);
+
+    setTimeout(()=>{
+        document.getElementById("envelopeScreen").classList.add("hidden");
+        document.getElementById("letterScreen").classList.remove("hidden");
+        document.body.style.overflow="auto";
+    },2000);
+}
+
+function flowers(){
+    for(let i=0;i<30;i++){
+        let flower=document.createElement("div");
+        flower.className="flower";
+        flower.innerHTML=["🌸","🌹","💐"][Math.floor(Math.random()*3)];
+        flower.style.left=Math.random()*100+"vw";
+        flower.style.animationDuration=(Math.random()*3+4)+"s";
+        document.body.appendChild(flower);
+        setTimeout(()=>flower.remove(),7000);
+    }
+}
+
+</script>
+
+</body>
+</html>
