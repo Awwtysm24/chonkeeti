@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Little World</title>
+
+<style>
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    overflow-x:hidden;
+    transition: background 1s;
+}
+
+/* Pastel + Dark toggle */
+body.pastel {
+    background: linear-gradient(135deg,#ffd6e8,#e0c3fc);
+    color:#333;
+}
+
+body.dark {
+    background: linear-gradient(135deg,#1e1e2f,#3a3a5f);
+    color:white;
+}
+
+.center {
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
+
+button {
+    padding:12px 20px;
+    border:none;
+    border-radius:25px;
+    background:white;
+    cursor:pointer;
+    font-weight:bold;
+    margin-top:20px;
+}
+
+.hidden {
+    display:none;
+}
+
+/* Envelope */
+.envelope {
+    width:200px;
+    height:120px;
+    background:#fff;
+    position:relative;
+    cursor:pointer;
+    transition:transform .6s;
+}
+
+.envelope:before {
+    content:"";
+    position:absolute;
+    top:-60px;
+    border-left:100px solid transparent;
+    border-right:100px solid transparent;
+    border-bottom:60px solid #fff;
+}
+
+.envelope.open {
+    transform:scale(1.1);
+}
+
+/* Floating hearts */
+.heart {
+    position:fixed;
+    color:pink;
+    animation:float 6s linear infinite;
+}
+
+@keyframes float {
+    from { transform:translateY(100vh); opacity:1;}
+    to { transform:translateY(-10vh); opacity:0;}
+}
+
+/* Timeline */
+.timeline {
+    padding:50px 20px;
+}
+
+.card {
+    margin:20px auto;
+    padding:20px;
+    max-width:400px;
+    background:rgba(255,255,255,0.2);
+    border-radius:20px;
+    backdrop-filter: blur(10px);
+    opacity:0;
+    transform:translateY(30px);
+    transition: all .6s ease;
+}
+
+.card.show {
+    opacity:1;
+    transform:translateY(0);
+}
+</style>
+</head>
+
+<body class="pastel">
+
+<!-- ENTRY -->
+<div class="center" id="entry">
+    <h1>Welcome to Our Little World</h1>
+    <button onclick="enter()">Click to Enter 💌</button>
+</div>
+
+<!-- ENVELOPE -->
+<div class="center hidden" id="envelopeScreen">
+    <div class="envelope" onclick="openLetter(this)"></div>
+    <p>Tap the envelope</p>
+</div>
+
+<!-- LETTER -->
+<div class="center hidden" id="letterScreen">
+    <h2 id="typed"></h2>
+    <button onclick="toggleTheme()">Switch Theme 🌗</button>
+    <button onclick="showTimeline()">Our Timeline ✨</button>
+</div>
+
+<!-- TIMELINE -->
+<div class="timeline hidden" id="timeline">
+    <div class="card">The day we met ❤️</div>
+    <div class="card">Our first inside joke 😂</div>
+    <div class="card">That unforgettable moment ✨</div>
+</div>
+
+<script>
+let clicks = 0;
+
+function enter() {
+    document.getElementById("entry").classList.add("hidden");
+    document.getElementById("envelopeScreen").classList.remove("hidden");
+}
+
+function openLetter(el) {
+    el.classList.add("open");
+    setTimeout(()=>{
+        document.getElementById("envelopeScreen").classList.add("hidden");
+        document.getElementById("letterScreen").classList.remove("hidden");
+        typeText();
+        startHearts();
+    },800);
+}
+
+let message = "You are my favorite person in this entire universe. Every day with you feels like magic.";
+let i = 0;
+
+function typeText() {
+    if(i < message.length) {
+        document.getElementById("typed").innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typeText,40);
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+    document.body.classList.toggle("pastel");
+}
+
+function showTimeline() {
+    document.getElementById("timeline").classList.remove("hidden");
+    let cards = document.querySelectorAll(".card");
+    cards.forEach((card,index)=>{
+        setTimeout(()=>{card.classList.add("show")},index*300);
+    });
+}
+
+function startHearts() {
+    setInterval(()=>{
+        let heart = document.createElement("div");
+        heart.className="heart";
+        heart.innerHTML="❤";
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.fontSize=(Math.random()*20+15)+"px";
+        document.body.appendChild(heart);
+        setTimeout(()=>{heart.remove()},6000);
+    },500);
+}
+
+/* Secret message */
+document.addEventListener("click",()=>{
+    clicks++;
+    if(clicks===5){
+        alert("You found the secret message 💖 I love you endlessly.");
+    }
+});
+</script>
+
+</body>
+</html>
